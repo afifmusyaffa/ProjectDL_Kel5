@@ -1,0 +1,29 @@
+# Node.js
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+npm-debug.log*
+
+# Python / Backend
+backend/venv/
+backend/__pycache__/
+backend/.pytest_cache/
+*.py[cod]
+*$py.class
+
+# Database
+backend/detection_history.db
+
+# Uploads & Results
+backend/results/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Temp Test Files
+test_image.jpg

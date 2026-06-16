@@ -1,0 +1,212 @@
+[
+  {
+    "id": "sign-0-larangan-berhenti",
+    "yolo_index": 0,
+    "name": "Larangan Berhenti",
+    "category": "Larangan",
+    "description": "Melarang kendaraan berhenti di sepanjang jalan dengan rambu ini.",
+    "function": "Mencegah kemacetan di area padat.",
+    "rules": "Dilarang berhenti sama sekali.",
+    "image": "/images/signs/sign-0-larangan-berhenti.svg"
+  },
+  {
+    "id": "sign-1-larangan-masuk-bagi-kendaraan-",
+    "yolo_index": 1,
+    "name": "Larangan Masuk Bagi Kendaraan Bermotor dan Tidak Bermotor",
+    "category": "Larangan",
+    "description": "Melarang semua jenis kendaraan untuk masuk ke jalan tersebut.",
+    "function": "Menjaga keamanan atau khusus pejalan kaki.",
+    "rules": "Dilarang melintas/masuk.",
+    "image": "/images/signs/sign-1-larangan-masuk-bagi-kendaraan-.svg"
+  },
+  {
+    "id": "sign-2-peringatan-alat-pemberi-isyara",
+    "yolo_index": 2,
+    "name": "Peringatan Alat Pemberi Isyarat Lalu Lintas",
+    "category": "Peringatan",
+    "description": "Memberi tahu ada lampu lalu lintas di depan.",
+    "function": "Agar pengemudi bersiap mengurangi kecepatan.",
+    "rules": "Waspada lampu lalu lintas.",
+    "image": "/images/signs/sign-2-peringatan-alat-pemberi-isyara.svg"
+  },
+  {
+    "id": "sign-3-peringatan-banyak-pejalan-kaki",
+    "yolo_index": 3,
+    "name": "Peringatan Banyak Pejalan Kaki Menggunakan Zebra Cross",
+    "category": "Peringatan",
+    "description": "Banyak pejalan kaki yang menyeberang.",
+    "function": "Melindungi pejalan kaki.",
+    "rules": "Kurangi kecepatan, utamakan pejalan kaki.",
+    "image": "/images/signs/sign-3-peringatan-banyak-pejalan-kaki.svg"
+  },
+  {
+    "id": "sign-4-peringatan-pintu-perlintasan-k",
+    "yolo_index": 4,
+    "name": "Peringatan Pintu Perlintasan Kereta Api",
+    "category": "Peringatan",
+    "description": "Akan ada perlintasan kereta api.",
+    "function": "Mencegah kecelakaan dengan kereta.",
+    "rules": "Berhenti sejenak, tengok kanan-kiri.",
+    "image": "/images/signs/sign-4-peringatan-pintu-perlintasan-k.svg"
+  },
+  {
+    "id": "sign-5-peringatan-simpang-tiga-sisi-k",
+    "yolo_index": 5,
+    "name": "Peringatan Simpang Tiga Sisi Kiri",
+    "category": "Peringatan",
+    "description": "Ada persimpangan ke kiri di depan.",
+    "function": "Antisipasi kendaraan dari kiri.",
+    "rules": "Kurangi kecepatan.",
+    "image": "/images/signs/sign-5-peringatan-simpang-tiga-sisi-k.svg"
+  },
+  {
+    "id": "sign-6-peringatan-penegasan-rambu-tam",
+    "yolo_index": 6,
+    "name": "Peringatan Penegasan Rambu Tambahan",
+    "category": "Peringatan",
+    "description": "Rambu ini biasanya disertai papan tambahan di bawahnya.",
+    "function": "Memberi peringatan khusus.",
+    "rules": "Perhatikan papan tambahan.",
+    "image": "/images/signs/sign-6-peringatan-penegasan-rambu-tam.svg"
+  },
+  {
+    "id": "sign-7-perintah-masuk-jalur-kiri",
+    "yolo_index": 7,
+    "name": "Perintah Masuk Jalur Kiri",
+    "category": "Kewajiban",
+    "description": "Wajib mengambil lajur kiri.",
+    "function": "Mengatur arus lalu lintas searah.",
+    "rules": "Tetap di lajur kiri.",
+    "image": "/images/signs/sign-7-perintah-masuk-jalur-kiri.svg"
+  },
+  {
+    "id": "sign-8-perintah-pilihan-memasuki-sala",
+    "yolo_index": 8,
+    "name": "Perintah Pilihan Memasuki Salah Satu Jalur",
+    "category": "Kewajiban",
+    "description": "Kendaraan wajib memilih salah satu jalur yang ditunjuk.",
+    "function": "Menghindari separator/pembatas jalan.",
+    "rules": "Ikuti salah satu arah panah.",
+    "image": "/images/signs/sign-8-perintah-pilihan-memasuki-sala.svg"
+  },
+  {
+    "id": "sign-9-petunjuk-area-parkir",
+    "yolo_index": 9,
+    "name": "Petunjuk Area Parkir",
+    "category": "Petunjuk",
+    "description": "Menandakan area resmi untuk parkir.",
+    "function": "Memberi info lokasi parkir.",
+    "rules": "Boleh memarkirkan kendaraan di area ini.",
+    "image": "/images/signs/sign-9-petunjuk-area-parkir.svg"
+  },
+  {
+    "id": "sign-10-petunjuk-lokasi-pemberhentian-",
+    "yolo_index": 10,
+    "name": "Petunjuk Lokasi Pemberhentian Bus",
+    "category": "Petunjuk",
+    "description": "Tempat perhentian bus / halte.",
+    "function": "Fasilitas angkutan umum.",
+    "rules": "Selain bus dilarang berhenti di area ini.",
+    "image": "/images/signs/sign-10-petunjuk-lokasi-pemberhentian-.svg"
+  },
+  {
+    "id": "sign-11-petunjuk-lokasi-putar-balik",
+    "yolo_index": 11,
+    "name": "Petunjuk Lokasi Putar Balik",
+    "category": "Petunjuk",
+    "description": "Lokasi yang diizinkan untuk putar balik (U-turn).",
+    "function": "Fasilitas putar arah.",
+    "rules": "Lakukan putar balik dengan aman.",
+    "image": "/images/signs/sign-11-petunjuk-lokasi-putar-balik.svg"
+  },
+  {
+    "id": "sign-12-larangan-parkir",
+    "yolo_index": 12,
+    "name": "Larangan Parkir",
+    "category": "Larangan",
+    "description": "Melarang kendaraan parkir, namun boleh berhenti sejenak untuk turun/naik penumpang.",
+    "function": "Mencegah penyempitan jalan.",
+    "rules": "Dilarang parkir.",
+    "image": "/images/signs/sign-12-larangan-parkir.svg"
+  },
+  {
+    "id": "sign-13-petunjuk-penyeberangan-pejalan",
+    "yolo_index": 13,
+    "name": "Petunjuk Penyeberangan Pejalan Kaki",
+    "category": "Petunjuk",
+    "description": "Lokasi penyeberangan (Zebra Cross).",
+    "function": "Menunjukkan area aman menyeberang.",
+    "rules": "Beri jalan pada pejalan kaki.",
+    "image": "/images/signs/sign-13-petunjuk-penyeberangan-pejalan.svg"
+  },
+  {
+    "id": "sign-14-lampu-hijau",
+    "yolo_index": 14,
+    "name": "Lampu Hijau",
+    "category": "Lampu Lalu Lintas",
+    "description": "Lampu lalu lintas menyala hijau.",
+    "function": "Kendaraan boleh jalan.",
+    "rules": "Silakan jalan dengan hati-hati.",
+    "image": "/images/signs/sign-14-lampu-hijau.svg"
+  },
+  {
+    "id": "sign-15-lampu-kuning",
+    "yolo_index": 15,
+    "name": "Lampu Kuning",
+    "category": "Lampu Lalu Lintas",
+    "description": "Lampu lalu lintas menyala kuning.",
+    "function": "Persiapan berhenti atau jalan.",
+    "rules": "Hati-hati, kurangi kecepatan.",
+    "image": "/images/signs/sign-15-lampu-kuning.svg"
+  },
+  {
+    "id": "sign-16-lampu-merah",
+    "yolo_index": 16,
+    "name": "Lampu Merah",
+    "category": "Lampu Lalu Lintas",
+    "description": "Lampu lalu lintas menyala merah.",
+    "function": "Kendaraan wajib berhenti.",
+    "rules": "Berhenti di belakang garis.",
+    "image": "/images/signs/sign-16-lampu-merah.svg"
+  },
+  {
+    "id": "sign-17-larangan-belok-kanan",
+    "yolo_index": 17,
+    "name": "Larangan Belok Kanan",
+    "category": "Larangan",
+    "description": "Dilarang berbelok ke kanan di persimpangan.",
+    "function": "Mengatur arus lalu lintas.",
+    "rules": "Terus lurus atau belok kiri (sesuai arah lain).",
+    "image": "/images/signs/sign-17-larangan-belok-kanan.svg"
+  },
+  {
+    "id": "sign-18-larangan-belok-kiri",
+    "yolo_index": 18,
+    "name": "Larangan Belok Kiri",
+    "category": "Larangan",
+    "description": "Dilarang berbelok ke kiri di persimpangan.",
+    "function": "Mengatur arus lalu lintas.",
+    "rules": "Terus lurus atau belok kanan (sesuai arah lain).",
+    "image": "/images/signs/sign-18-larangan-belok-kiri.svg"
+  },
+  {
+    "id": "sign-19-larangan-berjalan-terus-wajib-",
+    "yolo_index": 19,
+    "name": "Larangan Berjalan Terus Wajib Berhenti Sesaat",
+    "category": "Larangan",
+    "description": "Wajib berhenti sejenak sebelum melanjutkan perjalanan (Rambu STOP).",
+    "function": "Memastikan kondisi aman sebelum melintas.",
+    "rules": "Berhenti total sejenak.",
+    "image": "/images/signs/sign-19-larangan-berjalan-terus-wajib-.svg"
+  },
+  {
+    "id": "sign-20-larangan-memutar-balik",
+    "yolo_index": 20,
+    "name": "Larangan Memutar Balik",
+    "category": "Larangan",
+    "description": "Dilarang melakukan manuver putar balik (U-turn).",
+    "function": "Menghindari tabrakan atau kemacetan.",
+    "rules": "Dilarang putar balik.",
+    "image": "/images/signs/sign-20-larangan-memutar-balik.svg"
+  }
+]
