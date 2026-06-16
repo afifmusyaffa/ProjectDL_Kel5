@@ -20,6 +20,10 @@ async def lifespan(app: FastAPI):
         predict.set_model(None)
     else:
         try:
+            import torch
+            # Limit PyTorch threads to 1 to drastically reduce RAM usage on 512MB instances
+            torch.set_num_threads(1)
+            
             from ultralytics import YOLO
             print(f"[INFO] Memuat model dari {MODEL_PATH} ...")
             model = YOLO(str(MODEL_PATH))
