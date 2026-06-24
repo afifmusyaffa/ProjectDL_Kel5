@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge } from "../UI/Badge";
-import { formatConfidence, getConfidenceVariant, getCategoryColor } from "../../utils/format";
+import { formatConfidence, getConfidenceVariant, getCategoryColor, getConfidenceLabel } from "../../utils/format";
 
 export function DetectionCard({ detection, index }) {
   const { class_name, confidence, bbox, description, category, image } = detection;
@@ -19,16 +19,24 @@ export function DetectionCard({ detection, index }) {
         </div>
         {description && (
           <p className="detection-card__description" style={{ fontSize: "0.85rem", color: "var(--color-text-light)", marginTop: "4px", lineHeight: "1.4" }}>
-            {description}
+            <strong>Arti:</strong> {description}
           </p>
         )}
-        {bbox && (
-          <span className="detection-card__bbox" style={{ marginTop: "4px", display: "block" }}>
-            Box: [{bbox.map((b) => Math.round(b)).join(", ")}]
-          </span>
+        {detection.function && (
+          <p className="detection-card__function" style={{ fontSize: "0.85rem", color: "var(--color-text-light)", marginTop: "2px", lineHeight: "1.4" }}>
+            <strong>Fungsi:</strong> {detection.function}
+          </p>
         )}
+        {detection.rules && (
+          <p className="detection-card__rules" style={{ fontSize: "0.85rem", color: "var(--color-text-light)", marginTop: "2px", lineHeight: "1.4" }}>
+            <strong>Aturan:</strong> {detection.rules}
+          </p>
+        )}
+        <p className="detection-card__confidence" style={{ fontSize: "0.85rem", color: "var(--color-text-light)", marginTop: "2px", lineHeight: "1.4" }}>
+          <strong>Tingkat Kemiripan:</strong> {formatConfidence(confidence)} ({getConfidenceLabel(confidence)})
+        </p>
       </div>
-      <Badge variant={variant}>{formatConfidence(confidence)}</Badge>
+      <Badge variant={variant}>Kecocokan: {formatConfidence(confidence)}</Badge>
     </div>
   );
 }

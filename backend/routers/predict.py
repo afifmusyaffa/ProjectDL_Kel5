@@ -66,11 +66,15 @@ def run_inference(model, image: np.ndarray, conf_threshold: float = 0.25):
                 mapped_name = TRAFFIC_SIGNS_MAP[cls_id]["name"]
                 description = TRAFFIC_SIGNS_MAP[cls_id]["description"]
                 category = TRAFFIC_SIGNS_MAP[cls_id]["category"]
+                function = TRAFFIC_SIGNS_MAP[cls_id].get("function")
+                rules = TRAFFIC_SIGNS_MAP[cls_id].get("rules")
                 image_url = TRAFFIC_SIGNS_MAP[cls_id]["image"]
             else:
                 mapped_name = "Rambu Tidak Dikenali"
                 description = "Deskripsi tidak tersedia."
                 category = "Unknown"
+                function = None
+                rules = None
                 image_url = None
 
             print(f"[DEBUG] Mapping Berhasil -> {mapped_name}")
@@ -81,6 +85,8 @@ def run_inference(model, image: np.ndarray, conf_threshold: float = 0.25):
                 bbox=[round(b, 2) for b in bbox],
                 category=category,
                 description=description,
+                function=function,
+                rules=rules,
                 image=image_url
             ))
 
@@ -200,22 +206,35 @@ async def predict_video(
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+        # Gunakan codec 'avc1' (H.264) agar video hasil anotasi bisa langsung diputar di browser.
+        # Jika sistem tidak mendukung 'avc1', fallback ke 'mp4v'.
+        fourcc = cv2.VideoWriter_fourcc(*"avc1")
         out = cv2.VideoWriter(str(output_path), fourcc, fps, (width, height))
+        if not out.isOpened():
+            print("[WARNING] Codec avc1 tidak didukung, menggunakan fallback mp4v.")
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+            out = cv2.VideoWriter(str(output_path), fourcc, fps, (width, height))
 
         all_detections = []
         frame_count = 0
         process_every = max(1, int(fps // 5))  # Process 5 frames/sec max
+        last_detections = []
 
         while True:
             ret, frame = cap.read()
             if not ret:
                 break
             frame_count += 1
-            if frame_count % process_every == 0:
-                detections = run_inference(model, frame)
-                all_detections.extend(detections)
-                frame = annotate_image(frame, detections)
+            
+            # Jalankan deteksi hanya pada frame pertama dan setiap interval frame_skip
+            if frame_count == 1 or frame_count % process_every == 0:
+                last_detections = run_inference(model, frame)
+                all_detections.extend(last_detections)
+            
+            # Gambar bounding box di setiap frame (menggunakan deteksi terakhir) agar tidak berkedip
+            if last_detections:
+                frame = annotate_image(frame, last_detections)
+                
             out.write(frame)
 
         cap.release()
@@ -238,12 +257,27 @@ async def predict_video(
             unique_detections.append(d)
     save_detection_history(db, unique_detections, source="video")
 
+    unique_detections_list = [
+        {
+            "class_name": d.class_name,
+            "confidence": d.confidence,
+            "bbox": d.bbox,
+            "category": d.category,
+            "description": d.description,
+            "function": d.function,
+            "rules": d.rules,
+            "image": d.image
+        }
+        for d in unique_detections
+    ]
+
     return {
         "video_id": video_id,
         "output_url": f"/predict/video/result/{video_id}",
         "total_frames": total_frames,
         "total_detections": len(all_detections),
         "unique_classes": list(seen),
+        "unique_detections": unique_detections_list,
         "processing_time_ms": 0
     }
 

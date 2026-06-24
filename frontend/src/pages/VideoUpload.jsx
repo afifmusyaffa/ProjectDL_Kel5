@@ -3,6 +3,7 @@ import { DropZone } from "../components/Upload/DropZone";
 import { Button } from "../components/UI/Button";
 import { Spinner } from "../components/UI/Spinner";
 import { Badge } from "../components/UI/Badge";
+import { DetectionList } from "../components/Detection/DetectionList";
 import { useDetection } from "../hooks/useDetection";
 import { getVideoResult } from "../services/api";
 import { formatFileSize, formatConfidence } from "../utils/format";
@@ -99,15 +100,24 @@ export function VideoUpload() {
                   </div>
                 </div>
 
-                {result.unique_classes?.length > 0 && (
-                  <div className="detected-classes">
-                    <h3 className="detected-classes__title">Rambu Terdeteksi</h3>
-                    <div className="detected-classes__list">
-                      {result.unique_classes.map((cls) => (
-                        <Badge key={cls} variant="primary">{cls}</Badge>
-                      ))}
-                    </div>
+                {result.unique_detections && result.unique_detections.length > 0 ? (
+                  <div style={{ marginTop: "24px", marginBottom: "24px" }}>
+                    <DetectionList
+                      detections={result.unique_detections}
+                      title="Rambu Terdeteksi"
+                    />
                   </div>
+                ) : (
+                  result.unique_classes?.length > 0 && (
+                    <div className="detected-classes">
+                      <h3 className="detected-classes__title">Rambu Terdeteksi</h3>
+                      <div className="detected-classes__list">
+                        {result.unique_classes.map((cls) => (
+                          <Badge key={cls} variant="primary">{cls}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )
                 )}
 
                 {/* Video player */}

@@ -16,6 +16,8 @@ class Detection(BaseModel):
     bbox: List[float]
     category: Optional[str] = None
     description: Optional[str] = None
+    function: Optional[str] = None
+    rules: Optional[str] = None
     image: Optional[str] = None
 
 
