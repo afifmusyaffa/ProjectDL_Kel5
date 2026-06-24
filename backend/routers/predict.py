@@ -14,7 +14,7 @@ from fastapi import APIRouter, File, UploadFile, Depends, HTTPException, WebSock
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
-from database import get_db, DetectionHistory
+from database import get_db, DetectionHistory, SUCCESS_THRESHOLD
 from schemas import Detection, PredictResponse
 
 router = APIRouter(prefix="/predict", tags=["predict"])
@@ -122,7 +122,8 @@ def save_detection_history(db: Session, detections: List[Detection], source: str
             confidence=det.confidence,
             bbox=json.dumps(det.bbox),
             source=source,
-            image_path=image_path
+            image_path=image_path,
+            is_success=det.confidence >= SUCCESS_THRESHOLD
         )
         db.add(record)
     db.commit()

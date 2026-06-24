@@ -4,7 +4,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 
 from database import init_db
-from routers import predict, history, signs
+from routers import predict, history, signs, history_stats
 
 
 MODEL_PATH = Path("models/best.pt")
@@ -57,6 +57,7 @@ app.add_middleware(
 
 # Routers
 app.include_router(predict.router)
+app.include_router(history_stats.router)
 app.include_router(history.router)
 app.include_router(signs.router)
 

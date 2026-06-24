@@ -36,6 +36,7 @@ class HistoryItem(BaseModel):
     source: str
     image_path: Optional[str]
     created_at: datetime
+    is_success: Optional[bool] = None
 
     class Config:
         from_attributes = True

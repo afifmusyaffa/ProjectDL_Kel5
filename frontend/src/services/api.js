@@ -48,6 +48,9 @@ export const deleteHistoryItem = (id) =>
 export const clearHistory = () =>
   api.delete("/history");
 
+export const getHistoryStats = () =>
+  api.get("/history/stats");
+
 // ── Traffic Signs ────────────────────────────────────────────────────────────
 export const getTrafficSigns = () => api.get("/traffic-signs");
 export const getTrafficSign = (id) => api.get(`/traffic-signs/${id}`);
