@@ -108,10 +108,14 @@ function SourceBreakdown({ bySource }) {
             failed: 0,
             avg_confidence: 0,
           };
-          const pct =
+          const successPct =
             data.total > 0
               ? ((data.success / data.total) * 100).toFixed(1)
-              : 0;
+              : "0.0";
+          const failedPct =
+            data.total > 0
+              ? ((data.failed / data.total) * 100).toFixed(1)
+              : "0.0";
           return (
             <div className="ds-source-card" key={src}>
               <div className="ds-source-card__header">
@@ -154,13 +158,13 @@ function SourceBreakdown({ bySource }) {
                 <div className="ds-source-card__row">
                   <span>Sukses</span>
                   <strong style={{ color: "var(--color-success)" }}>
-                    {data.success}
+                    {data.success} ({successPct}%)
                   </strong>
                 </div>
                 <div className="ds-source-card__row">
                   <span>Gagal</span>
                   <strong style={{ color: "var(--color-danger)" }}>
-                    {data.failed}
+                    {data.failed} ({failedPct}%)
                   </strong>
                 </div>
                 <div className="ds-source-card__row">
@@ -172,17 +176,17 @@ function SourceBreakdown({ bySource }) {
               <div className="ds-mini-bar">
                 <div
                   className="ds-mini-bar__fill ds-mini-bar__fill--success"
-                  style={{ width: `${pct}%` }}
+                  style={{ width: `${successPct}%` }}
                 />
                 <div
                   className="ds-mini-bar__fill ds-mini-bar__fill--danger"
-                  style={{ width: `${100 - pct}%` }}
+                  style={{ width: `${failedPct}%` }}
                 />
               </div>
               <div className="ds-mini-bar__labels">
-                <span style={{ color: "var(--color-success)" }}>{pct}%</span>
+                <span style={{ color: "var(--color-success)" }}>{successPct}%</span>
                 <span style={{ color: "var(--color-danger)" }}>
-                  {(100 - pct).toFixed(1)}%
+                  {failedPct}%
                 </span>
               </div>
             </div>
@@ -280,6 +284,7 @@ function HistoryTable({
   clearAll,
 }) {
   const [confirmClear, setConfirmClear] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Default to 10 for better visibility
 
   // Apply filters
   let filtered = history;
@@ -297,12 +302,41 @@ function HistoryTable({
     filtered = filtered.filter((h) => h.confidence < SUCCESS_THRESHOLD);
   }
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
   const safePage = Math.min(page, totalPages);
   const paged = filtered.slice(
-    (safePage - 1) * ITEMS_PER_PAGE,
-    safePage * ITEMS_PER_PAGE
+    (safePage - 1) * itemsPerPage,
+    safePage * itemsPerPage
   );
+
+  const getPageNumbers = () => {
+    const range = [];
+    const delta = 2; // Number of pages to show before and after current page
+    const left = safePage - delta;
+    const right = safePage + delta + 1;
+    let l;
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === 1 || i === totalPages || (i >= left && i < right)) {
+        range.push(i);
+      }
+    }
+
+    const rangeWithDots = [];
+    for (let i of range) {
+      if (l) {
+        if (i - l === 2) {
+          rangeWithDots.push(l + 1);
+        } else if (i - l > 2) {
+          rangeWithDots.push("...");
+        }
+      }
+      rangeWithDots.push(i);
+      l = i;
+    }
+
+    return rangeWithDots;
+  };
 
   const handleClear = async () => {
     if (!confirmClear) {
@@ -430,7 +464,7 @@ function HistoryTable({
                   return (
                     <tr key={h.id}>
                       <td className="data-table__num">
-                        {(safePage - 1) * ITEMS_PER_PAGE + i + 1}
+                        {(safePage - 1) * itemsPerPage + i + 1}
                       </td>
                       <td className="data-table__name">{h.class_name}</td>
                       <td>
@@ -478,29 +512,92 @@ function HistoryTable({
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="ds-pagination">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={safePage <= 1}
-              >
-                ← Sebelumnya
-              </Button>
+          <div className="ds-pagination">
+            <div className="ds-pagination__left">
               <span className="ds-pagination__info">
-                Halaman {safePage} dari {totalPages} · {filtered.length} entri
+                Menampilkan <strong>{filtered.length > 0 ? (safePage - 1) * itemsPerPage + 1 : 0}</strong> -{" "}
+                <strong>{Math.min(safePage * itemsPerPage, filtered.length)}</strong> dari{" "}
+                <strong>{filtered.length}</strong> entri
               </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={safePage >= totalPages}
-              >
-                Selanjutnya →
-              </Button>
+              <div className="ds-pagination__select-wrap">
+                <span>Tampilkan</span>
+                <select
+                  className="ds-pagination__select"
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    setItemsPerPage(Number(e.target.value));
+                    setPage(1);
+                  }}
+                >
+                  {[5, 10, 20, 50, 100].map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
+                <span>entri</span>
+              </div>
             </div>
-          )}
+
+            {totalPages > 1 && (
+              <div className="ds-pagination__right">
+                <button
+                  className="ds-pagination__page-btn"
+                  onClick={() => setPage(1)}
+                  disabled={safePage <= 1}
+                  title="Halaman Pertama"
+                >
+                  «
+                </button>
+                <button
+                  className="ds-pagination__page-btn"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={safePage <= 1}
+                  title="Sebelumnya"
+                >
+                  ‹
+                </button>
+
+                {getPageNumbers().map((num, idx) => {
+                  if (num === "...") {
+                    return (
+                      <span key={`dots-${idx}`} className="ds-pagination__dots">
+                        ...
+                      </span>
+                    );
+                  }
+                  return (
+                    <button
+                      key={num}
+                      className={`ds-pagination__page-btn ${
+                        safePage === num ? "ds-pagination__page-btn--active" : ""
+                      }`}
+                      onClick={() => setPage(num)}
+                    >
+                      {num}
+                    </button>
+                  );
+                })}
+
+                <button
+                  className="ds-pagination__page-btn"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={safePage >= totalPages}
+                  title="Selanjutnya"
+                >
+                  ›
+                </button>
+                <button
+                  className="ds-pagination__page-btn"
+                  onClick={() => setPage(totalPages)}
+                  disabled={safePage >= totalPages}
+                  title="Halaman Terakhir"
+                >
+                  »
+                </button>
+              </div>
+            )}
+          </div>
         </>
       )}
     </div>

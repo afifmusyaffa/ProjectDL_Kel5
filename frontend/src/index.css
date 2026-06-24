@@ -2097,16 +2097,94 @@ a {
 .ds-pagination {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: var(--space-4);
   margin-top: var(--space-5);
   padding-top: var(--space-4);
   border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.ds-pagination__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
 }
 
 .ds-pagination__info {
   font-size: var(--font-size-sm);
   color: var(--color-muted);
+}
+
+.ds-pagination__select-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+}
+
+.ds-pagination__select {
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  outline: none;
+}
+
+.ds-pagination__select:focus {
+  border-color: var(--color-primary);
+}
+
+.ds-pagination__right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ds-pagination__page-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.ds-pagination__page-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-secondary);
+}
+
+.ds-pagination__page-btn--active {
+  background: var(--color-primary) !important;
+  color: #fff !important;
+  border-color: var(--color-primary) !important;
+}
+
+.ds-pagination__page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ds-pagination__dots {
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+  padding: 0 4px;
 }
 
 /* ── Responsive ─────────────────────────────────────────────── */
