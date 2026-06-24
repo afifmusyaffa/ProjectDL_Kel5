@@ -116,7 +116,31 @@ function SourceBreakdown({ bySource }) {
             <div className="ds-source-card" key={src}>
               <div className="ds-source-card__header">
                 <span className="ds-source-card__icon">
-                  {src === "image" ? "🖼️" : src === "video" ? "🎬" : "📷"}
+                  {src === "image" && (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                      <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                  )}
+                  {src === "video" && (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                      <line x1="7" y1="2" x2="7" y2="22"></line>
+                      <line x1="17" y1="2" x2="17" y2="22"></line>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                      <line x1="2" y1="7" x2="7" y2="7"></line>
+                      <line x1="2" y1="17" x2="7" y2="17"></line>
+                      <line x1="17" y1="17" x2="22" y2="17"></line>
+                      <line x1="17" y1="7" x2="22" y2="7"></line>
+                    </svg>
+                  )}
+                  {src === "camera" && (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                  )}
                 </span>
                 <span className="ds-source-card__title">
                   {SOURCE_LABELS[src]}
@@ -601,14 +625,25 @@ export function History() {
                 label="Total Deteksi"
                 value={stats.overall.total}
                 color="var(--color-info)"
-                icon="📊"
+                icon={
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                }
               />
               <StatCard
                 label="Deteksi Sukses"
                 value={stats.overall.success}
                 sub={`${stats.overall.success_rate.toFixed(1)}%`}
                 color="var(--color-success)"
-                icon="✅"
+                icon={
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                }
               />
               <StatCard
                 label="Deteksi Gagal"
@@ -617,13 +652,24 @@ export function History() {
                   100 - stats.overall.success_rate
                 ).toFixed(1)}%`}
                 color="var(--color-danger)"
-                icon="❌"
+                icon={
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                  </svg>
+                }
               />
               <StatCard
                 label="Rata-rata Confidence"
                 value={`${(stats.overall.avg_confidence * 100).toFixed(1)}%`}
                 color="var(--color-warning)"
-                icon="📈"
+                icon={
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                }
               />
             </div>
 

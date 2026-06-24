@@ -1763,8 +1763,16 @@ a {
 }
 
 .ds-stat-card__icon {
-  font-size: 28px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent, var(--color-primary));
+}
+
+.ds-stat-card__icon svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.2px;
 }
 
 .ds-stat-card__body {
@@ -1856,7 +1864,15 @@ a {
 }
 
 .ds-source-card__icon {
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+}
+
+.ds-source-card__icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 .ds-source-card__title {
