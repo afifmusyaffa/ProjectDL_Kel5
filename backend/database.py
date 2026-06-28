@@ -29,6 +29,10 @@ class DetectionHistory(Base):
     image_path = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     is_success = Column(Boolean, default=False)
+    # Kolom verifikasi manual oleh user
+    is_verified = Column(Boolean, default=False)
+    is_correct = Column(Boolean, nullable=True)  # NULL = belum diverifikasi
+    corrected_label = Column(String, nullable=True)  # diisi jika is_correct = False
 
 
 def get_db():
@@ -42,6 +46,7 @@ def get_db():
 def init_db():
     Base.metadata.create_all(bind=engine)
     _migrate_is_success()
+    _migrate_verification_columns()
 
 
 def _migrate_is_success():
@@ -62,3 +67,22 @@ def _migrate_is_success():
             ))
             conn.commit()
             print("[MIGRATION] Kolom is_success berhasil ditambahkan dan di-backfill.")
+
+
+def _migrate_verification_columns():
+    """Safely add verification columns to existing database."""
+    columns = [
+        ("is_verified", "BOOLEAN DEFAULT 0"),
+        ("is_correct", "BOOLEAN"),
+        ("corrected_label", "TEXT"),
+    ]
+    with engine.connect() as conn:
+        for col_name, col_type in columns:
+            try:
+                conn.execute(text(f"SELECT {col_name} FROM detection_history LIMIT 1"))
+            except Exception:
+                conn.execute(text(
+                    f"ALTER TABLE detection_history ADD COLUMN {col_name} {col_type}"
+                ))
+                conn.commit()
+                print(f"[MIGRATION] Kolom {col_name} berhasil ditambahkan.")

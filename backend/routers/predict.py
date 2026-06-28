@@ -115,7 +115,8 @@ def image_to_base64(image: np.ndarray) -> str:
 
 
 def save_detection_history(db: Session, detections: List[Detection], source: str, image_path: str = None):
-    """Save detections to SQLite history."""
+    """Save detections to SQLite history. Returns list of created record IDs."""
+    records = []
     for det in detections:
         record = DetectionHistory(
             class_name=det.class_name,
@@ -126,7 +127,10 @@ def save_detection_history(db: Session, detections: List[Detection], source: str
             is_success=det.confidence >= SUCCESS_THRESHOLD
         )
         db.add(record)
+        records.append(record)
     db.commit()
+    # Setelah commit, record.id sudah terisi oleh SQLAlchemy
+    return [r.id for r in records]
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -162,13 +166,14 @@ async def predict_image(
     processing_time = (time.time() - start) * 1000
 
     # Save history
-    save_detection_history(db, detections, source="image")
+    history_ids = save_detection_history(db, detections, source="image")
 
     return PredictResponse(
         detections=detections,
         annotated_image=annotated_b64,
         total_detections=len(detections),
-        processing_time_ms=round(processing_time, 1)
+        processing_time_ms=round(processing_time, 1),
+        history_ids=history_ids
     )
 
 
@@ -256,7 +261,7 @@ async def predict_video(
         if d.class_name not in seen:
             seen.add(d.class_name)
             unique_detections.append(d)
-    save_detection_history(db, unique_detections, source="video")
+    history_ids = save_detection_history(db, unique_detections, source="video")
 
     unique_detections_list = [
         {
@@ -279,7 +284,8 @@ async def predict_video(
         "total_detections": len(all_detections),
         "unique_classes": list(seen),
         "unique_detections": unique_detections_list,
-        "processing_time_ms": 0
+        "processing_time_ms": 0,
+        "history_ids": history_ids
     }
 
 

@@ -4,7 +4,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 
 from database import init_db
-from routers import predict, history, signs, history_stats
+from routers import predict, history, signs, history_stats, camera_history, history_verify
 
 
 MODEL_PATH = Path("models/best.pt")
@@ -60,6 +60,8 @@ app.include_router(predict.router)
 app.include_router(history_stats.router)
 app.include_router(history.router)
 app.include_router(signs.router)
+app.include_router(camera_history.router)
+app.include_router(history_verify.router)
 
 # Serve result videos
 results_dir = Path("results")

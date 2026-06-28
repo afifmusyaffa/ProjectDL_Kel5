@@ -50,6 +50,13 @@ def get_history_stats(db: Session = Depends(get_db)):
                 "medium": 0,
                 "low": 0,
             },
+            "verification": {
+                "total_verified": 0,
+                "correct": 0,
+                "incorrect": 0,
+                "accuracy_verified": 0.0,
+                "unverified": 0,
+            },
         }
 
     success = (
@@ -159,6 +166,36 @@ def get_history_stats(db: Session = Depends(get_db)):
         or 0
     )
 
+    # ── Verification Stats ───────────────────────────────────────
+    total_verified = (
+        db.query(func.count(DetectionHistory.id))
+        .filter(DetectionHistory.is_verified == True)
+        .scalar()
+        or 0
+    )
+    correct = (
+        db.query(func.count(DetectionHistory.id))
+        .filter(
+            DetectionHistory.is_verified == True,
+            DetectionHistory.is_correct == True,
+        )
+        .scalar()
+        or 0
+    )
+    incorrect = (
+        db.query(func.count(DetectionHistory.id))
+        .filter(
+            DetectionHistory.is_verified == True,
+            DetectionHistory.is_correct == False,
+        )
+        .scalar()
+        or 0
+    )
+    unverified = total - total_verified
+    accuracy_verified = (
+        (correct / total_verified * 100) if total_verified > 0 else 0.0
+    )
+
     return {
         "model_baseline": MODEL_BASELINE,
         "overall": {
@@ -175,5 +212,12 @@ def get_history_stats(db: Session = Depends(get_db)):
             "high": high,
             "medium": medium,
             "low": low,
+        },
+        "verification": {
+            "total_verified": total_verified,
+            "correct": correct,
+            "incorrect": incorrect,
+            "accuracy_verified": round(accuracy_verified, 1),
+            "unverified": unverified,
         },
     }

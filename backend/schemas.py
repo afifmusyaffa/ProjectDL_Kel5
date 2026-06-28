@@ -26,6 +26,7 @@ class PredictResponse(BaseModel):
     annotated_image: Optional[str] = None  # base64 encoded
     total_detections: int
     processing_time_ms: float
+    history_ids: List[int] = []  # ID record history yang baru disimpan
 
 
 class HistoryItem(BaseModel):
@@ -37,6 +38,9 @@ class HistoryItem(BaseModel):
     image_path: Optional[str]
     created_at: datetime
     is_success: Optional[bool] = None
+    is_verified: Optional[bool] = False
+    is_correct: Optional[bool] = None
+    corrected_label: Optional[str] = None
 
     class Config:
         from_attributes = True

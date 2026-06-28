@@ -6,10 +6,13 @@ import { Spinner } from "../components/UI/Spinner";
 import { BoundingBox } from "../components/Detection/BoundingBox";
 import { useDetection } from "../hooks/useDetection";
 import { formatFileSize } from "../utils/format";
+import { VerificationModal } from "../components/VerificationModal";
 
 export function ImageUpload() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [isVerifyOpen, setIsVerifyOpen] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   const imageRef = useRef(null);
 
   const { result, loading, error, progress, detectImage, resetState } = useDetection();
@@ -18,6 +21,7 @@ export function ImageUpload() {
     resetState();
     setFile(f);
     setPreview(URL.createObjectURL(f));
+    setIsVerified(false);
   };
 
   const handleDetect = () => {
@@ -29,7 +33,17 @@ export function ImageUpload() {
     setFile(null);
     if (preview) URL.revokeObjectURL(preview);
     setPreview(null);
+    setIsVerified(false);
   };
+
+  // Map detections to include history IDs from backend
+  const verificationDetections = result?.detections && result?.history_ids
+    ? result.detections.map((det, idx) => ({
+        id: result.history_ids[idx],
+        label: det.class_name,
+        confidence: det.confidence,
+      })).filter(det => det.id !== undefined)
+    : [];
 
   return (
     <div className="page-wrapper">
@@ -119,11 +133,37 @@ export function ImageUpload() {
 
             {/* Detections list */}
             {result && (
-              <DetectionList detections={result.detections} />
+              <>
+                <DetectionList detections={result.detections} />
+                
+                {/* Verification section */}
+                {verificationDetections.length > 0 && (
+                  <div style={{ marginTop: "16px", display: "flex", justifyContent: "center" }}>
+                    <Button
+                      variant={isVerified ? "outline" : "primary"}
+                      onClick={() => setIsVerifyOpen(true)}
+                      disabled={isVerified}
+                      className="btn--verify"
+                    >
+                      {isVerified ? "✅ Deteksi Telah Diverifikasi" : "Verifikasi Deteksi"}
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
       </div>
+
+      {/* Verification Modal */}
+      {result && (
+        <VerificationModal
+          isOpen={isVerifyOpen}
+          detections={verificationDetections}
+          onSubmit={() => setIsVerified(true)}
+          onClose={() => setIsVerifyOpen(false)}
+        />
+      )}
     </div>
   );
 }

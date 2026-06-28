@@ -27,3 +27,9 @@ Thumbs.db
 
 # Temp Test Files
 test_image.jpg
+
+# Mengabaikan virtual environment Python
+backend/venv/
+venv/
+.venv/
+

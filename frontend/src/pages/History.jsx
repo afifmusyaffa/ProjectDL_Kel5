@@ -277,6 +277,8 @@ function HistoryTable({
   setSourceFilter,
   statusFilter,
   setStatusFilter,
+  verificationFilter,
+  setVerificationFilter,
   page,
   setPage,
   fetchHistory,
@@ -300,6 +302,15 @@ function HistoryTable({
     filtered = filtered.filter((h) => h.confidence >= SUCCESS_THRESHOLD);
   } else if (statusFilter === "fail") {
     filtered = filtered.filter((h) => h.confidence < SUCCESS_THRESHOLD);
+  }
+  
+  // Verification filter
+  if (verificationFilter === "correct") {
+    filtered = filtered.filter((h) => h.is_verified && h.is_correct === true);
+  } else if (verificationFilter === "incorrect") {
+    filtered = filtered.filter((h) => h.is_verified && h.is_correct === false);
+  } else if (verificationFilter === "unverified") {
+    filtered = filtered.filter((h) => !h.is_verified);
   }
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
@@ -368,7 +379,7 @@ function HistoryTable({
       </div>
 
       {/* Filters */}
-      <div className="ds-filters">
+      <div className="ds-filters" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         <input
           type="search"
           className="search-bar__input"
@@ -380,51 +391,77 @@ function HistoryTable({
             setConfirmClear(false);
           }}
           aria-label="Cari riwayat deteksi"
+          style={{ width: "100%" }}
         />
 
-        <div className="ds-filter-tabs">
-          <span className="ds-filter-label">Sumber:</span>
-          {[
-            { val: "", label: "Semua" },
-            { val: "image", label: "Gambar" },
-            { val: "video", label: "Video" },
-            { val: "camera", label: "Kamera" },
-          ].map((opt) => (
-            <button
-              key={opt.val}
-              className={`ds-filter-btn ${
-                sourceFilter === opt.val ? "ds-filter-btn--active" : ""
-              }`}
-              onClick={() => {
-                setSourceFilter(opt.val);
-                setPage(1);
-              }}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+          <div className="ds-filter-tabs">
+            <span className="ds-filter-label">Sumber:</span>
+            {[
+              { val: "", label: "Semua" },
+              { val: "image", label: "Gambar" },
+              { val: "video", label: "Video" },
+              { val: "camera", label: "Kamera" },
+            ].map((opt) => (
+              <button
+                key={opt.val}
+                className={`ds-filter-btn ${
+                  sourceFilter === opt.val ? "ds-filter-btn--active" : ""
+                }`}
+                onClick={() => {
+                  setSourceFilter(opt.val);
+                  setPage(1);
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
 
-        <div className="ds-filter-tabs">
-          <span className="ds-filter-label">Status:</span>
-          {[
-            { val: "", label: "Semua" },
-            { val: "success", label: "Sukses" },
-            { val: "fail", label: "Gagal" },
-          ].map((opt) => (
-            <button
-              key={opt.val}
-              className={`ds-filter-btn ${
-                statusFilter === opt.val ? "ds-filter-btn--active" : ""
-              }`}
-              onClick={() => {
-                setStatusFilter(opt.val);
-                setPage(1);
-              }}
-            >
-              {opt.label}
-            </button>
-          ))}
+          <div className="ds-filter-tabs">
+            <span className="ds-filter-label">Status:</span>
+            {[
+              { val: "", label: "Semua" },
+              { val: "success", label: "Sukses" },
+              { val: "fail", label: "Gagal" },
+            ].map((opt) => (
+              <button
+                key={opt.val}
+                className={`ds-filter-btn ${
+                  statusFilter === opt.val ? "ds-filter-btn--active" : ""
+                }`}
+                onClick={() => {
+                  setStatusFilter(opt.val);
+                  setPage(1);
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="ds-filter-tabs">
+            <span className="ds-filter-label">Verifikasi:</span>
+            {[
+              { val: "", label: "Semua" },
+              { val: "correct", label: "Benar" },
+              { val: "incorrect", label: "Salah" },
+              { val: "unverified", label: "Belum Diverifikasi" },
+            ].map((opt) => (
+              <button
+                key={opt.val}
+                className={`ds-filter-btn ${
+                  verificationFilter === opt.val ? "ds-filter-btn--active" : ""
+                }`}
+                onClick={() => {
+                  setVerificationFilter(opt.val);
+                  setPage(1);
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -451,8 +488,10 @@ function HistoryTable({
                 <tr>
                   <th>#</th>
                   <th>Nama Rambu</th>
+                  <th>Label Benar</th>
                   <th>Confidence</th>
                   <th>Status</th>
+                  <th>Verifikasi</th>
                   <th>Sumber</th>
                   <th>Waktu</th>
                   <th></th>
@@ -467,6 +506,13 @@ function HistoryTable({
                         {(safePage - 1) * itemsPerPage + i + 1}
                       </td>
                       <td className="data-table__name">{h.class_name}</td>
+                      <td className="data-table__corrected-name">
+                        {h.is_verified
+                          ? h.is_correct
+                            ? "—"
+                            : h.corrected_label || "-"
+                          : "-"}
+                      </td>
                       <td>
                         <Badge variant={getConfidenceVariant(h.confidence)}>
                           {formatConfidence(h.confidence)}
@@ -476,6 +522,23 @@ function HistoryTable({
                         <Badge variant={isSuccess ? "success" : "danger"}>
                           {isSuccess ? "Sukses" : "Gagal"}
                         </Badge>
+                      </td>
+                      <td>
+                        <span
+                          className={`verification-badge ${
+                            h.is_verified
+                              ? h.is_correct
+                                ? "verification-badge--correct"
+                                : "verification-badge--wrong"
+                              : "verification-badge--pending"
+                          }`}
+                        >
+                          {h.is_verified
+                            ? h.is_correct
+                              ? "✅ Benar"
+                              : "❌ Salah"
+                            : "⏳ Belum"}
+                        </span>
                       </td>
                       <td>
                         <span className="source-tag">
@@ -622,6 +685,7 @@ export function History() {
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [verificationFilter, setVerificationFilter] = useState("");
   const [page, setPage] = useState(1);
 
   // ── Fetch Stats ────────────────────────────────────────────
@@ -770,6 +834,66 @@ export function History() {
               />
             </div>
 
+            {/* Row 1.5 — Verification Stat Cards */}
+            <h3 className="ds-section-title" style={{ marginTop: "32px", marginBottom: "16px" }}>
+              Verifikasi Hasil Oleh Pengguna
+            </h3>
+            <div className="ds-stat-grid">
+              <StatCard
+                label="Total Terverifikasi"
+                value={stats.verification?.total_verified || 0}
+                sub={`${(stats.overall.total > 0 ? (stats.verification?.total_verified / stats.overall.total * 100) : 0).toFixed(1)}% dari total`}
+                color="var(--color-info)"
+                icon={
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                }
+              />
+              <StatCard
+                label="Label Benar (Correct)"
+                value={stats.verification?.correct || 0}
+                sub={`${stats.verification?.accuracy_verified || 0.0}% akurasi`}
+                color="var(--color-success)"
+                icon={
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                }
+              />
+              <StatCard
+                label="Label Salah (Koreksi)"
+                value={stats.verification?.incorrect || 0}
+                sub={`${(stats.verification?.total_verified > 0 ? (stats.verification.incorrect / stats.verification.total_verified * 100) : 0).toFixed(1)}% error rate`}
+                color="var(--color-danger)"
+                icon={
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                  </svg>
+                }
+              />
+              <StatCard
+                label="Belum Diverifikasi"
+                value={stats.verification?.unverified || 0}
+                sub={`${(stats.overall.total > 0 ? (stats.verification?.unverified / stats.overall.total * 100) : 0).toFixed(1)}% antrean`}
+                color="var(--color-muted)"
+                icon={
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                }
+              />
+            </div>
+
             {/* Row 2 — Model vs App Comparison */}
             <ModelComparisonTable
               baseline={stats.model_baseline}
@@ -803,6 +927,8 @@ export function History() {
           setSourceFilter={setSourceFilter}
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}
+          verificationFilter={verificationFilter}
+          setVerificationFilter={setVerificationFilter}
           page={page}
           setPage={setPage}
           fetchHistory={refreshAll}

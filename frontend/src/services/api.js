@@ -51,6 +51,12 @@ export const clearHistory = () =>
 export const getHistoryStats = () =>
   api.get("/history/stats");
 
+export const saveCameraDetections = (detections) =>
+  api.post("/history/save-camera", { detections, source_type: "camera" });
+
+export const verifyDetections = (verifications) =>
+  api.patch("/history/verify", { verifications });
+
 // ── Traffic Signs ────────────────────────────────────────────────────────────
 export const getTrafficSigns = () => api.get("/traffic-signs");
 export const getTrafficSign = (id) => api.get(`/traffic-signs/${id}`);

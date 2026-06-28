@@ -7,14 +7,18 @@ import { DetectionList } from "../components/Detection/DetectionList";
 import { useDetection } from "../hooks/useDetection";
 import { getVideoResult } from "../services/api";
 import { formatFileSize, formatConfidence } from "../utils/format";
+import { VerificationModal } from "../components/VerificationModal";
 
 export function VideoUpload() {
   const [file, setFile] = useState(null);
+  const [isVerifyOpen, setIsVerifyOpen] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   const { result, loading, error, progress, detectVideo, resetState } = useDetection();
 
   const handleFile = (f) => {
     resetState();
     setFile(f);
+    setIsVerified(false);
   };
 
   const handleDetect = () => {
@@ -24,7 +28,17 @@ export function VideoUpload() {
   const handleReset = () => {
     resetState();
     setFile(null);
+    setIsVerified(false);
   };
+
+  // Map unique_detections to include history IDs from backend
+  const verificationDetections = result?.unique_detections && result?.history_ids
+    ? result.unique_detections.map((det, idx) => ({
+        id: result.history_ids[idx],
+        label: det.class_name,
+        confidence: det.confidence,
+      })).filter(det => det.id !== undefined)
+    : [];
 
   return (
     <div className="page-wrapper">
@@ -120,6 +134,20 @@ export function VideoUpload() {
                   )
                 )}
 
+                {/* Verification section */}
+                {verificationDetections.length > 0 && (
+                  <div style={{ marginTop: "16px", marginBottom: "24px", display: "flex", justifyContent: "center" }}>
+                    <Button
+                      variant={isVerified ? "outline" : "primary"}
+                      onClick={() => setIsVerifyOpen(true)}
+                      disabled={isVerified}
+                      className="btn--verify"
+                    >
+                      {isVerified ? "✅ Deteksi Telah Diverifikasi" : "Verifikasi Deteksi"}
+                    </Button>
+                  </div>
+                )}
+
                 {/* Video player */}
                 <div className="video-player-wrap">
                   <h3 className="video-player-wrap__title">Video Hasil Anotasi</h3>
@@ -135,6 +163,16 @@ export function VideoUpload() {
           </div>
         )}
       </div>
+
+      {/* Verification Modal */}
+      {result && (
+        <VerificationModal
+          isOpen={isVerifyOpen}
+          detections={verificationDetections}
+          onSubmit={() => setIsVerified(true)}
+          onClose={() => setIsVerifyOpen(false)}
+        />
+      )}
     </div>
   );
 }
