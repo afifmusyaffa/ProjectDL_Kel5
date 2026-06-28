@@ -98,11 +98,18 @@ export function Camera() {
       toast.success("Deteksi tersimpan!");
 
       // Set result card data
+      const verifData = savedDetections.map((det, idx) => ({
+        id: res.data.saved_ids[idx],
+        label: det.class_name,
+        confidence: det.confidence,
+      })).filter(det => det.id !== undefined);
+
       setLastResult({
         timestamp,
         frameImage: frameSnapshot,
         detections: savedDetections,
         historyIds: res.data.saved_ids,
+        verificationDetections: verifData,
       });
       setIsVerified(false);
     } catch {
@@ -347,15 +354,7 @@ export function Camera() {
        {lastResult && (
          <VerificationModal
            isOpen={isVerifyOpen}
-           detections={
-             lastResult.detections && lastResult.historyIds
-               ? lastResult.detections.map((det, idx) => ({
-                   id: lastResult.historyIds[idx],
-                   label: det.class_name,
-                   confidence: det.confidence,
-                 })).filter(det => det.id !== undefined)
-               : []
-           }
+           detections={lastResult.verificationDetections || []}
            onSubmit={() => setIsVerified(true)}
            onClose={() => setIsVerifyOpen(false)}
          />

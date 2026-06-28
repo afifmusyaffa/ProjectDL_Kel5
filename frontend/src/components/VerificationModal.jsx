@@ -19,10 +19,12 @@ export function VerificationModal({ isOpen, detections = [], onSubmit, onClose }
   );
   const [submitting, setSubmitting] = useState(false);
 
-  // Reset items when detections change
+  const detectionsKey = detections.map((d) => d.id).join(",");
+
+  // Reset items when detections change (comparing value, not reference)
   React.useEffect(() => {
     setItems(detections.map(() => ({ isCorrect: true, correctedLabel: "" })));
-  }, [detections]);
+  }, [detectionsKey]);
 
   const toggleCorrect = useCallback((idx, correct) => {
     setItems((prev) =>
